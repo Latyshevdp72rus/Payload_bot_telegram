@@ -1,5 +1,6 @@
 import sqlite3
 from time import time
+from users_sub import *
 
 
 class UsersCRUD:
@@ -43,13 +44,32 @@ class UsersCRUD:
         self.cursor.execute(f"UPDATE users SET balance = balance + {paymount} WHERE user_id ={user_id}")
         if user_id_ref[0]:
             balance = int(int(paymount) * 0.1)
-            self.cursor.execute(f"UPDATE users SET balance = balance + {balance} WHERE user_id ={1683270028}")
+            self.cursor.execute(f"UPDATE users SET balance = balance + {balance} WHERE user_id ={user_id}")
         self.conn.commit()
 
-    def get_ballance(self,user_id):
+    def get_ballance(self, user_id):
         balance = self.cursor.execute("""SELECT balance FROM users WHERE user_id=?""", (user_id,)).fetchone()
         return balance[0]
 
+    def get_user(self, user_id):
+        if self.__exist_user(user_id):
+            return User(self.cursor.execute("""SELECT * FROM users WHERE user_id=?""", (user_id,)).fetchone())
+        return False
+
+    def update_user(self, data: User):
+        self.cursor.execute("""UPDATE users SET user_name = ?, sub = ?, balance = ?  WHERE id=?""",
+                            (data.name, data.sub, data.balance, data.id))
+        self.conn.commit()
+
+    #
     def close_conn(self):
         self.conn.close()
         print('Соединение закрыто')
+
+
+# db = UsersCRUD()
+# user: User = db.get_user('1683270029')
+# print(user.get_sub_time())
+# user.buy_sub(10)
+# db.update_user(user)
+# db.close_conn()

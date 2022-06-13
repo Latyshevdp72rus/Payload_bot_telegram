@@ -1,3 +1,4 @@
+import users_sub
 from main import dp,user_db
 from aiogram.types import Message
 
@@ -25,3 +26,14 @@ async def conn(msg:Message):
 @dp.message_handler(commands='balance')
 async def conn(msg:Message):
     return await msg.answer(f'Ваш баланс: {user_db.get_ballance(user_id=msg.from_user.id)} рублей')
+
+
+@dp.message_handler(commands='who_sub')
+async def buy_sub_cmd(msg:Message):
+    us = user_db.get_user(msg.from_user.id)
+    await msg.answer(f"У вас подписка {us.get_sub_time()}")
+
+
+# @dp.message_handler(commands='sub')
+# async def conn(msg:Message):
+#     await msg.answer(User.get_sub_time())
